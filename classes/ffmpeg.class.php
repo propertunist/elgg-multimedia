@@ -207,8 +207,8 @@ class FFmpeg
 		      else
 		      {
 			     //trigger_error ( "File ". $file ." doesn't exist" , E_USER_ERROR  );
-   	           //  elgg_dump(elgg_echo('projekktor:ffmpeg:file_not_found'));	
-			     register_error(elgg_echo('projekktor:ffmpeg:file_not_found'));
+   	           //  elgg_dump(elgg_echo('multimedia:ffmpeg:file_not_found'));	
+			     register_error(elgg_echo('multimedia:ffmpeg:file_not_found'));
               }
 		}
 		return $this;

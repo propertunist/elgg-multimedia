@@ -25,7 +25,7 @@ if (($base_type == 'video') || ($base_type == 'audio'))
 {
     if (!$file->duration)
     {
-       $file->duration = projekktor_get_video_duration($file->getFilenameOnFilestore(), true);
+       $file->duration = multimedia_get_video_duration($file->getFilenameOnFilestore(), true);
     }
     $mime_label .=  ' : <span class="elgg-media-length">' . secondsToWords($file->duration) . '</span>';
 }   

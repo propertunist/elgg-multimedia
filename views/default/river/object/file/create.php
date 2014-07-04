@@ -9,7 +9,7 @@ $excerpt = strip_tags($object->description);
 $excerpt = '<div class="elgg-river-excerpt">' . elgg_get_excerpt($excerpt,230) . '</div>';
 $thumbnail = '<div class="elgg-river-thumb" id="elgg-river-media-' . $object_guid . '">';
 
-if (!$autoplay = elgg_get_plugin_setting('river_autoplay','projekktor'))
+if (!$autoplay = elgg_get_plugin_setting('river_autoplay','multimedia'))
     $autoplay = 0;
 
 
@@ -17,16 +17,16 @@ if (($object->simpletype == 'video')||($object->simpletype == 'audio'))
 {
     if ($object->simpletype == 'video')
     {
-        if (!$height = elgg_get_plugin_setting('river_height_v','projekktor'))
+        if (!$height = elgg_get_plugin_setting('river_height_v','multimedia'))
             $height = 240;
-        if (!$width = elgg_get_plugin_setting('river_width_v','projekktor'))        
+        if (!$width = elgg_get_plugin_setting('river_width_v','multimedia'))        
             $width = 320;
     }
     else
     {
-        if (!$height = elgg_get_plugin_setting('river_height_a','projekktor'))
+        if (!$height = elgg_get_plugin_setting('river_height_a','multimedia'))
             $height = 120;
-        if (!$width = elgg_get_plugin_setting('river_width_a','projekktor'))        
+        if (!$width = elgg_get_plugin_setting('river_width_a','multimedia'))        
             $width = 320;
     }
     

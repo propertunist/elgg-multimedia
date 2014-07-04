@@ -51,7 +51,7 @@ function multimedia_file_route_hook($hook, $type, $return_value, $params)
                         exit;
                     }
 
-                    header('X-Accel-Redirect: "' . $file_path . '"');                    
+                  //  header('X-Accel-Redirect: "' . $file_path . '"');                    
                     
                     // fix for IE https issue
                     //header("Pragma: public");
