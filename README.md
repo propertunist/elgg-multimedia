@@ -1,5 +1,5 @@
-multimedia for elgg 1.8
------------------------
+elgg-multimedia
+===============
 
 author: ura soul
 website: https://www.infiniteeureka.com
@@ -45,4 +45,3 @@ install notes
 3. edit the plugin options page via the admin area. 
 4. ensure that the avconv package is installed on your server and that the path to avconv is correct for your server (without this, the video thumbnails will not be created).
 5. ensure that the 'passthru' command is allowed in the server's php.ini file. passthru allows the php code to trigger command line processes - this is necessary to initiate avconv when creating video thumbnails.
-
