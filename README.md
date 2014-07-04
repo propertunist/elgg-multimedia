@@ -2,12 +2,14 @@ elgg-multimedia
 ===============
 
 author: ura soul
-website: https://www.infiniteeureka.com
+website: https://www.ureka.org
 
 summary
 -------
 
 this plugin uses the multimedia media player to play audio and video files that are uploaded to the standard elgg file plugin.
+
+STATUS: this plugin is not finished yet. the elgg files cannot be streamed yet successfully via the nginx server since they are stored within the dataroot and this is causing some type of conflict.
 
 features:
 --------
@@ -15,9 +17,9 @@ features:
 * generates thumbnail screenshot for uploaded videos, using avconv (previously known as FFmpeg).
 * plays many video/audio web file formats.
 * full screen mode.
-* multiple platforms supported - native, browser, ios, android, html5, flash.
+* adds video.js video/media player for elgg file playback
 * supports watermark symbol.
-* places the file title over the video in appropriate ways.
+* places the file title over the video appropriately.
 * adds an embed code box underneath the media player - to allow iframe embeds of your media to be added to external websites.
 * supports pseudo streaming (requires server configuration). 
 * adds thumbnails for files to the river create events.
