@@ -72,8 +72,9 @@
  */
 
 // get absolute path to this lib
-define('PATH_QTFASTSTART', dirname(__FILE__) . '/');
-       // require dirname(__FILE__) . '/classes/qt-faststart.php/lib/';
+//define('PATH_QTFASTSTART', str_replace($_SERVER['DOCUMENT_ROOT'], "", dirname(realpath(__FILE__))).DIRECTORY_SEPARATOR);
+define('PATH_QTFASTSTART', elgg_get_plugins_path() . 'multimedia/classes/qt-faststart.php/lib/');
+
 // atom poc class
 require_once PATH_QTFASTSTART.'atom'.DIRECTORY_SEPARATOR.'Atom.class.php';
 

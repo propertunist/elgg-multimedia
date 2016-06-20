@@ -5,56 +5,35 @@
 */
 
 // Load multimedia javascript
-elgg_load_js('multimedia');
+elgg_require_js('videojs');
+elgg_require_js('multimedia/player');
+elgg_require_js('video-logobrand');
+elgg_require_js('video-watermark');
 
 // Set location variables
-$swf_url =  elgg_get_site_url() . 'mod/multimedia/vendors/video-js/video-js.swf';
+$file = $vars['entity'];
+$site_url = elgg_get_site_url();
+$swf_url =  $site_url . 'mod/multimedia/vendors/video-js/video-js.swf';
 $owner = $vars['entity']->getOwnerEntity();
-$file_url = elgg_get_site_url() . 'file/download/'.$vars['entity']->getGUID();
-$view_url = elgg_get_site_url() . 'file/view/'.$vars['entity']->getGUID();
-$callback_url = elgg_get_site_url();
+$owner_url = $owner->getURL();
+$file_url = $site_url . 'file/play/'.$file->getGUID();
+$view_url = $site_url . 'file/view/'.$file->getGUID();
+$callback_url = $site_url;
 
+$watermark_path = $owner->getIconURL('small');
 
-$dbprefix = $CONFIG->dbprefix;
-// Go to DB and pull down filename data
-$result = mysql_query("SELECT {$dbprefix}metastrings.string
-FROM {$dbprefix}metastrings
-LEFT JOIN {$dbprefix}metadata
-ON {$dbprefix}metastrings.id = {$dbprefix}metadata.value_id
-LEFT JOIN {$dbprefix}objects_entity
-ON {$dbprefix}metadata.entity_guid = {$dbprefix}objects_entity.guid
-WHERE ({$dbprefix}objects_entity.guid = '{$vars['entity']->getGUID()}') AND ({$dbprefix}metastrings.string LIKE 'file/%')");
-// Check query ran and result is populated
-if (!$result) {
-// Query failed, return to origin page with error
-	register_error(elgg_echo('multimedia:dbase:runerror'));
-	forward(REFERER);
-}
-// Query worked but returned empty row, slightly unneccesary, but anyway...
-if (mysql_num_rows($result) == 0) {
-	register_error(elgg_echo('multimedia:dbase:notvalid'));
-	forward(REFERER);
+if ($watermark_path == '')
+{
+    $watermark_path = elgg_get_plugin_setting("watermark_path", "multimedia");
 }
 
-// Dump results into array
-$row = mysql_fetch_array($result);
+// get file's external path
+$real_file_path = elgg_get_inline_url($file);
 
-// Filename details
-$ext = pathinfo($row['string'], PATHINFO_EXTENSION);
-$filename = substr(pathinfo($row['string'], PATHINFO_FILENAME).".". pathinfo($row['string'], PATHINFO_EXTENSION),10);
-
-// Should we urlencode the filename?
-$pathfile = $file_url."/".$filename;
-if($plugin_encode = elgg_get_plugin_setting("encode", "multimedia")){
-	if($plugin_encode == 'urlencode') {
-		$pathfile = $file_url."/".urlencode($filename);
-	}
-	elseif($plugin_encode == 'rawurlencode') {
-		$pathfile = $file_url."/".rawurlencode($filename);
-	}
-	else  {
-		$pathfile = $file_url."/".$filename;
-	}
+if (!$real_file_path) {
+	// no file path is available, return to origin page with error
+	register_error(elgg_echo('multimedia:real_path_error'));
+	forward(REFERER);
 }
 
 $mime = $vars['entity']->getMimeType();
@@ -81,36 +60,20 @@ if($vars['iframe'])
         $callback_url = $view_url;
 }
 
+// build HTML for media player
 
-?>
+$output = '<div class="multimedia';
+if ($vars['iframe']) {$output .= ' elgg-media-embed';}
+$output .='" id="mediaplayer" data-swf="' . $swf_url . '" data-title="' . $file->title . '" data-owner="' . $owner->name . '" data-href="' . $view_url . '" data-watermark="' . $watermark_path . '" data-owner-url=" ' . $owner_url . '">';
 
-<!-- Place holder for multimedia-->
-<div class="multimedia<?php if ($vars['iframe']) echo ' elgg-media-embed' ; ?>" id="mediaplayer">
-    <video id="multimedia_1" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="<?php echo $vars['width']; ?>" height="<?php echo $vars['height']; ?>"
-  poster="<?php echo  $vars['entity']->getIconURL('large'); ?>"
-  data-setup='{"controls": true, "autoplay":<?php echo $vars['autoplay']; ?>,"preload": "auto" }'>
-  <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-  <source src="<?php echo $pathfile; ?>" type='<?php echo $mime; ?>' />
-  </video>
-</div>
-<!-- Set options for multimedia -->
-    <script type="text/javascript">
-             $(document).ready(function() {
-                  videojs.options.flash.swf = "<?php echo $swf_url; ?>";
-                 <?php //if ($vars['iframe']) echo 'iframe: true,' ; ?>
-           //       title: '<?php echo '<b>' . $vars['entity']->title . '</b> <i>- ' . elgg_echo('multimedia:uploaded_by') . ' ' . $owner->name . '</i>'; ?>',
-              
-                  $(".embedcode").click(function() {
-                        if(!$(this).hasClass("selected")) {
-                            $(this).select();
-                            $(this).addClass("selected");
-                        }
-                    });
-                    $(".embedcode").blur(function() {
-                        if($(this).hasClass("selected")) {
-                            $(this).removeClass("selected");
-                        }
-                    });
-             });
-            
-    </script>
+$output .= '<video id="multimedia_1" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="' . $vars['width'] . '" height="' . $vars['height'] . '"
+ poster="' . $file->getIconURL('master') . '" data-setup=\'{"controls":true,"autoplay":' . $vars['autoplay'] . ',"preload":"auto"}\'>';
+
+$output .= '<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>';
+
+$output .= '<source src="' . $real_file_path .'" type="' . $mime .'" />';
+
+$output .= '</video>';
+$output .= '</div>';
+
+echo $output;

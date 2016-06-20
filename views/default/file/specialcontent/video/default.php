@@ -18,6 +18,5 @@ if($plugin_video_autoplay = elgg_get_plugin_setting("video_start", "multimedia")
     $vars['autoplay'] = $plugin_video_autoplay;
 }
 
-       
 echo elgg_view('multimedia/player', $vars);
 echo elgg_view('multimedia/embed-box', $vars);

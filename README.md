@@ -1,5 +1,5 @@
-elgg-multimedia
-===============
+multimedia for elgg 1.9.x-1.12.x
+-----------------------
 
 author: ura soul
 website: https://www.ureka.org
@@ -9,17 +9,15 @@ summary
 
 this plugin uses the multimedia media player to play audio and video files that are uploaded to the standard elgg file plugin.
 
-STATUS: this plugin is not finished yet. the elgg files cannot be streamed yet successfully via the nginx server since they are stored within the dataroot and this is causing some type of conflict.
-
 features:
 --------
 
 * generates thumbnail screenshot for uploaded videos, using avconv (previously known as FFmpeg).
 * plays many video/audio web file formats.
 * full screen mode.
-* adds video.js video/media player for elgg file playback
+* multiple platforms supported - native, browser, ios, android, html5, flash.
 * supports watermark symbol.
-* places the file title over the video appropriately.
+* places the file title over the video in appropriate ways.
 * adds an embed code box underneath the media player - to allow iframe embeds of your media to be added to external websites.
 * supports pseudo streaming (requires server configuration). 
 * adds thumbnails for files to the river create events.
@@ -47,3 +45,4 @@ install notes
 3. edit the plugin options page via the admin area. 
 4. ensure that the avconv package is installed on your server and that the path to avconv is correct for your server (without this, the video thumbnails will not be created).
 5. ensure that the 'passthru' command is allowed in the server's php.ini file. passthru allows the php code to trigger command line processes - this is necessary to initiate avconv when creating video thumbnails.
+

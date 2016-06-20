@@ -97,7 +97,7 @@ The default control bar that is a container for most of the controls.
   height: 3.0em;
   /* background-color-with-alpha */
   background-color: #07141e;
-  background-color: rgba(7, 20, 30, 0.7);
+  background-color: rgba(30, 15, 7, 0.7);
 }
 /* Show the control bar only once the video has started playing */
 .vjs-default-skin.vjs-has-started .vjs-control-bar {
@@ -265,7 +265,7 @@ fonts to show/hide properly.
   /* assuming volume starts at 1.0 */
 
   width: 100%;
-  background: #66a8cc url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAP0lEQVQIHWWMAQoAIAgDR/QJ/Ub//04+w7ZICBwcOg5FZi5iBB82AGzixEglJrd4TVK5XUJpskSTEvpdFzX9AB2pGziSQcvAAAAAAElFTkSuQmCC) -50% 0 repeat;
+  background: rgb(204, 134, 102) url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAP0lEQVQIHWWMAQoAIAgDR/QJ/Ub//04+w7ZICBwcOg5FZi5iBB82AGzixEglJrd4TVK5XUJpskSTEvpdFzX9AB2pGziSQcvAAAAAAElFTkSuQmCC) -50% 0 repeat;
 }
 .vjs-default-skin .vjs-volume-bar .vjs-volume-handle {
   width: 0.5em;
@@ -349,7 +349,7 @@ fonts to show/hide properly.
       The -50% left position makes that happen.
   */
 
-  background: #66a8cc url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAP0lEQVQIHWWMAQoAIAgDR/QJ/Ub//04+w7ZICBwcOg5FZi5iBB82AGzixEglJrd4TVK5XUJpskSTEvpdFzX9AB2pGziSQcvAAAAAAElFTkSuQmCC) -50% 0 repeat;
+  background: rgb(204, 127, 102) url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAP0lEQVQIHWWMAQoAIAgDR/QJ/Ub//04+w7ZICBwcOg5FZi5iBB82AGzixEglJrd4TVK5XUJpskSTEvpdFzX9AB2pGziSQcvAAAAAAElFTkSuQmCC) -50% 0 repeat;
 }
 .vjs-default-skin .vjs-load-progress {
   background: #646464 /* IE8- Fallback */;
@@ -439,9 +439,8 @@ easily in the skin designer. http://designer.videojs.com/
   opacity: 1;
   /* Need a slightly gray bg so it can be seen on black backgrounds */
   /* background-color-with-alpha */
-  background-color: #07141e;
-  background-color: rgba(7, 20, 30, 0.7);
-  border: 0.1em solid #3b4249;
+  background-color: rgba(30, 13, 7, 0.7);
+  border: 0.1em solid rgb(73, 63, 59);
   /* border-radius */
   -webkit-border-radius: 0.8em;
   -moz-border-radius: 0.8em;
@@ -481,14 +480,14 @@ easily in the skin designer. http://designer.videojs.com/
 .vjs-default-skin:hover .vjs-big-play-button,
 .vjs-default-skin .vjs-big-play-button:focus {
   outline: 0;
-  border-color: #fff;
+  border-color: rgb(255, 166, 131);;
   /* IE8 needs a non-glow hover state */
   background-color: #505050;
   background-color: rgba(50, 50, 50, 0.75);
   /* box-shadow */
-  -webkit-box-shadow: 0 0 3em #ffffff;
-  -moz-box-shadow: 0 0 3em #ffffff;
-  box-shadow: 0 0 3em #ffffff;
+  -webkit-box-shadow: 0px 0px 1.3em rgba(251, 167, 74, 0.65);
+  -moz-box-shadow: 0px 0px 1.3em rgba(251, 167, 74, 0.65);
+  box-shadow: 0px 0px 1.3em rgba(251, 167, 74, 0.65);
   /* transition */
   -webkit-transition: all 0s;
   -moz-transition: all 0s;
@@ -913,13 +912,43 @@ body.vjs-full-window {
 The original source of this file lives at
 https://github.com/videojs/video.js/blob/master/src/css/video-js.less */
 
-#vjs-logobrand-image {bottom: 4px!important;width: 19%;}
+/* Hide the poster after the video has started playing */
+.video-js.vjs-has-started .vjs-poster {
+  display: none;
+}
+
+img#vjs-logobrand-image {
+    position: absolute;
+    bottom: 4px!important;
+    transition: visibility 0.1s ease 0s, opacity 0.1s ease 0s;
+    visibility: visible;
+    width: 9.5em;
+    left: 50%;
+    margin-left: -4.25em;
+}
+.vjs-user-inactive img#vjs-logobrand-image, .vjs-user-inactive .vjs-watermark img, .vjs-user-inactive .vjs-title  {
+	visibility: hidden;
+}
+.vjs-user-inactive.vjs-paused img#vjs-logobrand-image, .vjs-user-inactive .vjs-watermark img, .vjs-user-inactive .vjs-title {
+	visibility: visible;
+}
+.vjs-ad-playing a#vjs-logobrand-image-destination, .vjs-user-inactive .vjs-watermark img,.vjs-user-inactive .vjs-title {
+	display: none;
+}
+
+.vjs-watermark {top: 0.4em;right: 0.5em;position: absolute; display: inline;}
+.vjs-watermark img {width: 5em; height:5em;transition: visibility 0.1s ease 0s, opacity 0.1s ease 0s; visibility: visible;}
+.vjs-title{left: 0.4em;top: 0.4em;max-width: 90%; position: absolute; display: inline;background: rgba(0, 0, 0, 0.5);padding: 2px 7px;border-radius: 4px;font-size:1.3em;}
 
 /* embed */
 
-.elgg-media-embed {position:absolute; top:0; left:0; margin:0; padding:0;}
-.elgg-media-embed-box {margin:1em auto; padding:10px;}
-.elgg-media-embed-box > input {max-width:80%;}
+.elgg-media-embed {position:absolute; top:0; left:0; margin:0; padding:0;width: 100%;height: 100%;}
+.elgg-media-embed-box {margin:1em auto; padding:10px;text-align:center;}
+.elgg-media-embed-box > input {max-width:58%;}
+#embed-copy-btn {background: rgb(47, 47, 47);border: 1px solid rgb(110, 110, 110);padding: 2px 5px;top: -2px;}
+#embed-copy-btn:hover {border: 1px solid rgb(212, 88, 9);}
+#embed-copy-btn img{width: 20px;height: 20px;}
+.embed-width-select{margin-left:7px;}
 
 /* river */
 

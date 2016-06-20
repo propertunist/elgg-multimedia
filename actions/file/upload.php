@@ -11,6 +11,8 @@ $desc = get_input("description");
 $access_id = (int) get_input("access_id");
 $container_guid = (int) get_input('container_guid', 0);
 $guid = (int) get_input('file_guid');
+$upload_guids = (int) get_input('upload_guids');
+
 $tags = get_input("tags");
 
 if ($container_guid == 0) {
@@ -19,9 +21,11 @@ if ($container_guid == 0) {
 
 elgg_make_sticky_form('file');
 
-// check if upload failed
+// check if upload attempted and failed
 if (!empty($_FILES['upload']['name']) && $_FILES['upload']['error'] != 0) {
-	register_error(elgg_echo('file:cannotload'));
+	$error = elgg_get_friendly_upload_error($_FILES['upload']['error']);
+
+	register_error($error);
 	forward(REFERER);
 }
 
@@ -29,6 +33,21 @@ if (!empty($_FILES['upload']['name']) && $_FILES['upload']['error'] != 0) {
 $new_file = true;
 if ($guid > 0) {
 	$new_file = false;
+}
+
+$uploads = hypeApps()->uploader->handle('upload_guids', array(
+            'subtype' => 'file',
+            'container_guid' => get_input('container_guid'),
+            'access_id' => ACCESS_PRIVATE
+        ));
+
+if (!empty($uploads)) {
+    foreach ($uploads as $upload) {
+        $entity = $upload->file;
+        if ($entity instanceof \ElggEntity) {
+            $upload_guids[] = $entity->guid;
+        }
+    }
 }
 
 if ($new_file) {
@@ -39,7 +58,7 @@ if ($new_file) {
 		forward(REFERER);
 	}
 
-	$file = new FilePluginFile();
+	$file = new ElggFile();
 	$file->subtype = "file";
 
 	// if no title on new upload, grab filename
@@ -49,7 +68,7 @@ if ($new_file) {
 
 } else {
 	// load original file object
-	$file = new FilePluginFile($guid);
+	$file = new ElggFile($guid);
 	if (!$file) {
 		register_error(elgg_echo('file:cannotload'));
 		forward(REFERER);
@@ -130,10 +149,9 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 
 	// if image, we need to create thumbnails (this should be moved into a function)
 
-	
 	if ($guid && $file->simpletype == "image") {
 		$file->icontime = time();
-		
+
 		$thumbnail = get_resized_image_from_existing_file($file->getFilenameOnFilestore(), 60, 60, true);
 		if ($thumbnail) {
 			$thumb = new ElggFile();
@@ -169,40 +187,47 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 		}
 	} elseif ($guid && $file->simpletype == "video")
     {
-  
-	    $file->icontime = time();
+        $file->icontime = time();
         $thumbnail = multimedia_get_video_thumbnail_for_file_plugin($file, 50, $prefix, $filestorename);
+	
         if (!$thumbnail)
             {
                 // failed to save file object - nothing we can do about this
                  $error = elgg_echo("file:screenshotfailed");
                  register_error($error);
             }
-        
-        $moov_result = multimedia_correct_moov_atom($file->getFilenameOnFilestore());
-	
+
+
+
 	} elseif ($file->icontime) {
 		// if it is not an image, we do not need thumbnails
 		unset($file->icontime);
-		
+
 		$thumb = new ElggFile();
-		
+
 		$thumb->setFilename($prefix . "thumb" . $filestorename);
 		$thumb->delete();
 		unset($file->thumbnail);
-		
+
 		$thumb->setFilename($prefix . "smallthumb" . $filestorename);
 		$thumb->delete();
 		unset($file->smallthumb);
-		
+
 		$thumb->setFilename($prefix . "largethumb" . $filestorename);
 		$thumb->delete();
 		unset($file->largethumb);
 	}
-    
+
     if (($guid && $file->simpletype == "video")||($guid && $file->simpletype == "audio"))
+    {
                $file->duration = multimedia_get_video_duration($file->getFilenameOnFilestore(), true);
-    
+    }
+
+    if (($guid && $file->simpletype == "video")&&(substr($mime_type, 0, strpos($mime_type, '/')) == 'mp4'))
+    {
+        $moov_result = multimedia_correct_moov_atom ($file->getFilenameOnFilestore());
+    }
+
 } else {
 	// not saving a file but still need to save the entity to push attributes to database
 	$file->save();
@@ -217,7 +242,12 @@ if ($new_file) {
 	if ($guid) {
 		$message = elgg_echo("file:saved");
 		system_message($message);
-		add_to_river('river/object/file/create', 'create', elgg_get_logged_in_user_guid(), $file->guid);
+		elgg_create_river_item(array(
+			'view' => 'river/object/file/create',
+			'action_type' => 'create',
+			'subject_guid' => elgg_get_logged_in_user_guid(),
+			'object_guid' => $file->guid,
+		));
 	} else {
 		// failed to save file object - nothing we can do about this
 		$error = elgg_echo("file:uploadfailed");

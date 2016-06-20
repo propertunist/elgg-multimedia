@@ -7,9 +7,6 @@
 
 // Back-end settings
 // Set Defaults
-if (!isset($vars['entity']->encode)) {
-	$vars['entity']->encode = 'off';
-	}
 if (!isset($vars['entity']->audio_wd)) {
 	$vars['entity']->audio_wd = 300;
 	}
@@ -46,6 +43,9 @@ if (!isset($vars['entity']->thumb_percent)) {
 if (!isset($vars['entity']->avconv_path)) {
     $vars['entity']->avconv_path = 'usr/bin';
     }
+if (!isset($vars['entity']->encoder_name)) {
+    $vars['entity']->encoder_name = 'avconv';
+    }
 if (!isset($vars['entity']->river_autoplay)) {
     $vars['entity']->river_autoplay = 1;
     }
@@ -55,25 +55,6 @@ if (!isset($vars['entity']->watermark_path)) {
 
 
 echo '<div style="margin-left:25px;">';
-// Setup option for urlencoding
-echo "<h3>" . elgg_echo("multimedia:encode:encode") . "</h3>";
-echo '<br/>';
-echo '<p>' . elgg_echo("multimedia:encoding:desc") . '</p>';
-
-echo "<br /><label>" . elgg_echo("multimedia:encode:encoding") . "</label>";
-
-echo elgg_view('input/dropdown', array(
-	'name' => 'params[encode]',
-	'options_values' => array(
-		'urlencode' => elgg_echo('multimedia:urlencode'),
-		'rawurlencode' => elgg_echo('multimedia:rawurlencode'),
-		'off' => elgg_echo('multimedia:off')
-	),
-	'value' => $vars['entity']->encode,
-	'class' => 'elgg-admin-input-right',
-));
-
-echo '<p style="padding-bottom:20px;border-bottom:solid 1px #777;width:100%;"></p>';
 
 // Setup option for autostart
 echo "<h3>" . elgg_echo("multimedia:autoplay:autoplay") . "</h3>";
@@ -89,7 +70,7 @@ echo elgg_view('input/dropdown', array(
 		'true' => elgg_echo('multimedia:autoplay:on')
 	),
 	'value' => $vars['entity']->audio_start,
-    'class' => 'elgg-admin-input-right',	
+    'class' => 'elgg-admin-input-right',
 )) . '</div>';
 
 echo "<label>" . elgg_echo("multimedia:autoplay:audio") . "</label>";
@@ -102,7 +83,7 @@ echo elgg_view('input/dropdown', array(
 		'true' => elgg_echo('multimedia:autoplay:on')
 	),
 	'value' => $vars['entity']->video_start,
-    'class' => 'elgg-admin-input-right',	
+    'class' => 'elgg-admin-input-right',
 )) . '</div>';
 echo "<label>" . elgg_echo("multimedia:autoplay:video") . "</label>";
 
@@ -116,12 +97,12 @@ echo elgg_view('input/dropdown', array(
         1 => elgg_echo('multimedia:autoplay:on')
     ),
     'value' => $vars['entity']->river_autoplay,
-    'class' => 'elgg-admin-input-right',    
+    'class' => 'elgg-admin-input-right',
 )) . '</div>';
 echo '<label>'. elgg_echo("multimedia:admin:river_autoplay") .'</label>';
 
 echo '<p style="padding-bottom:20px;border-bottom:solid 1px #777;width:100%;">';
-// Setup A&V screens height and width 
+// Setup A&V screens height and width
 echo '<br/><br/>';
 echo "<h3>" . elgg_echo("multimedia:player:size") . "</h3>";
 echo '<br/>';
@@ -231,6 +212,15 @@ echo elgg_view('input/text', array(
 ));
 echo '</div><div class="clearfloat"></div>';
 
+// FFMPEG encoder name
+echo '<div style="margin:6px 0 0 20px;"><label>'. elgg_echo("multimedia:admin:encoder_name") .'</label></div><div style="clear:both;"></div>';
+echo '<div style="float:right;margin:0 10px 10px 0;padding-left:25px;">';
+echo elgg_view('input/text', array(
+    'name' => 'params[encoder_name]',
+    'class' => 'multimedia-admin-input',
+    'value' => $vars['entity']->encoder_name,
+));
+echo '</div><div class="clearfloat"></div>';
 
 echo '<p style="padding-bottom:20px;border-bottom:solid 1px #777;width:100%;"></p>';
 
@@ -246,4 +236,12 @@ echo elgg_view('input/text', array(
     'value' => $vars['entity']->watermark_path,
 ));
 echo '</div><div class="clearfloat"></div>';
+echo '<br/>';
+echo '<h3>'. elgg_echo('admin:upgrades:videolist_type').'</h3>';
+echo elgg_view('admin/upgrades/videolist_items');
+echo '<br/>';
+echo '<br/>';
+echo '<h3>'. elgg_echo('admin:upgrades:file_thumbs').'</h3>';
+echo elgg_view('admin/upgrades/file_thumbnails');
+echo '<br/>';
 echo '<br/>';

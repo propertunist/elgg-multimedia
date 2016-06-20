@@ -55,7 +55,7 @@ class FFmpeg
 	/**
 	*	
 	*/
-	private $ffmpeg		=	'avconv';
+	private $ffmpeg		=	'ffmpeg';
 	/**
 	*	
 	*/
@@ -583,4 +583,3 @@ class FFmpeg
 		}
 	}
 }
-?>
