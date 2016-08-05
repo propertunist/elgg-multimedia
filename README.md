@@ -1,4 +1,4 @@
-multimedia for elgg 1.9.x-1.12.x
+multimedia for elgg 1.9.x-2.x
 -----------------------
 
 author: ura soul
